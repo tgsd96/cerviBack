@@ -1,0 +1,17 @@
+{
+	"ImportPath": "github.com/tgsd96/cerviBack",
+	"GoVersion": "go1.8",
+	"GodepVersion": "v79",
+	"Deps": [
+		{
+			"ImportPath": "github.com/google/uuid",
+			"Comment": "0.2-11-g7e072fc",
+			"Rev": "7e072fc3a7be179aee6d3359e46015aa8c995314"
+		},
+		{
+			"ImportPath": "github.com/julienschmidt/httprouter",
+			"Comment": "v1.1-41-g8a45e95",
+			"Rev": "8a45e95fc75cb77048068a62daed98cc22fdac7c"
+		}
+	]
+}
