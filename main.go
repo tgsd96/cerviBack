@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/jinzhu/gorm"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 
@@ -20,7 +22,11 @@ import (
 )
 
 var App *firebase.App
+var db *gorm.DB
 var uploader *s3manager.Uploader
+var sess *session.Session
+
+const QUEUE_URL = "https://sqs.us-west-2.amazonaws.com/907743384002/jobQueue"
 
 // intialize aws sessions
 func uploadImage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -91,15 +97,36 @@ func uploadImage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 	log.Printf("\nSuccessfully uploaded file to S3")
-	//
-	// dst, err := os.Create(filename + extension)
-	// defer dst.Close()
-	// fmt.Printf("\nSaving file, %s ", filename)
-	// if _, err := io.Copy(dst, file); err != nil {
-	// 	fmt.Printf("Error occured during saving the file : %s", err.Error())
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
+
+	// Add to RDS table for processing
+	image := models.ImageStatus{
+		ImageKey: filename,
+		UserID:   "testingId",
+		Status:   "INQUEUE",
+	}
+	err = app.AddImageToTable(db, &image)
+	if err != nil {
+		log.Fatalf("Error adding entry to table, error : %s", err.Error())
+		response.Status = "failed_to_process_image"
+		msg, _ := json.Marshal(response)
+		fmt.Fprint(w, string(msg))
+		return
+	}
+
+	// add message to queue
+	Sqsmsg := models.SqsMessage{
+		ImageKey: filename,
+		UserID:   "testinguserid",
+	}
+	err = app.PushToSQS(sess, QUEUE_URL, Sqsmsg)
+	if err != nil {
+		log.Fatalf("\nError pushing messages to queue, error : %s", err.Error())
+		response.Status = "failed_sqs_push"
+		msg, _ := json.Marshal(response)
+		fmt.Fprint(w, string(msg))
+		return
+	}
+
 	response.Status = "Success"
 	response.Token = "bhakk ho gya kaam"
 	response.ImageUID = filename
@@ -115,21 +142,33 @@ func testAPI(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	msg, _ := json.Marshal(response)
 	fmt.Fprint(w, string(msg))
 }
-
+func index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	fmt.Fprintf(w, "<h1>You have reached the end of the galaxy</h1><h2>No web page for you!</h2><h3>Endpoints at /api/upload</h3>")
+}
 func main() {
+	//Connect to firebase app
 	App = app.InitFirebase()
 
-	//
-	sess, err := session.NewSession(&aws.Config{
+	var err error
+	// Connect to RDS instance
+	db, err = app.ConnectToRDS()
+	if err != nil {
+		log.Fatalf("\nError connecting to database, check configs. Error: %s", err.Error())
+		return
+	}
+
+	sess, err = session.NewSession(&aws.Config{
 		Region: aws.String("us-west-2"),
 	})
 	if err != nil {
 		fmt.Printf("Error while connecting to aws: %s", err.Error())
+		return
 	}
 	uploader = s3manager.NewUploader(sess)
 	router := httprouter.New()
 	router.POST("/api/upload", uploadImage)
 	router.GET("/api/test", testAPI)
+	router.GET("/", index)
 	fmt.Println("Starting server :8080")
 	http.ListenAndServe(":8080", router)
 }
