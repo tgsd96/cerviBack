@@ -1,0 +1,20 @@
+version: 0.1
+
+phases:
+  install:
+    commands:
+      - go get -u github.com/golang/lint/golin
+      
+  pre_build:
+    commands:
+      - golint -set_exit_status
+      - go test
+  
+  build:
+    commands:
+      - go build -o app
+artifacts:
+  files:
+    - app
+    - appspec.yml
+    - buildspec.yml
