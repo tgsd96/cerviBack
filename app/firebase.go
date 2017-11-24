@@ -9,8 +9,8 @@ import (
 	"google.golang.org/api/option"
 )
 
-func InitFirebase() *firebase.App {
-	abspath, _ := filepath.Abs("./firebase.json")
+func InitFirebase(path string) *firebase.App {
+	abspath, _ := filepath.Abs(path)
 	var opt = option.WithCredentialsFile(abspath)
 	App, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {

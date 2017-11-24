@@ -11,8 +11,10 @@ import (
 
 // connect to rds instance return the db instance
 
-func ConnectToRDS() (*gorm.DB, error) {
-	db, err := gorm.Open("mysql", "admin:H?!A4gkm@tcp(cerbackmain.cpkl1sz5etxf.us-west-2.rds.amazonaws.com:3306)/cerback")
+func ConnectToRDS(adapter, host, user, pass, name string) (*gorm.DB, error) {
+	dbString := user + ":" + pass + "@tcp(" + host + ")/" + name + "?parseTime=true"
+	//"admin:H?!A4gkm@tcp(cerbackmain.cpkl1sz5etxf.us-west-2.rds.amazonaws.com:3306)/cerback"
+	db, err := gorm.Open(adapter, dbString)
 	if err != nil {
 		log.Fatalf("Error connecting to db: %s", err.Error())
 		return nil, err

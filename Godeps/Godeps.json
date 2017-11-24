@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/tgsd96/cerviBack",
-	"GoVersion": "go1.8",
+	"GoVersion": "go1.9",
 	"GodepVersion": "v79",
 	"Deps": [
 		{
@@ -72,6 +72,11 @@
 			"ImportPath": "firebase.google.com/go/storage",
 			"Comment": "v2.1.0",
 			"Rev": "edbe442c6993c8f7a6f6a39d7e72680c2dac431d"
+		},
+		{
+			"ImportPath": "github.com/BurntSushi/toml",
+			"Comment": "v0.3.0-7-ga368813",
+			"Rev": "a368813c5e648fee92e5f6c30e3944ff9d5e8895"
 		},
 		{
 			"ImportPath": "github.com/aws/aws-sdk-go/aws",
@@ -270,6 +275,10 @@
 			"Rev": "317e0006254c44a0ac427cc52a0e083ff0b9622f"
 		},
 		{
+			"ImportPath": "github.com/jinzhu/configor",
+			"Rev": "6ecfe629230f24c2e92c7894c6ab21b83b757a39"
+		},
+		{
 			"ImportPath": "github.com/jinzhu/gorm",
 			"Comment": "v1.0-176-g0a51f6c",
 			"Rev": "0a51f6cdc55d1650d9ed3b4c13026cfa9133b01e"
@@ -292,6 +301,10 @@
 			"ImportPath": "github.com/julienschmidt/httprouter",
 			"Comment": "v1.1-41-g8a45e95",
 			"Rev": "8a45e95fc75cb77048068a62daed98cc22fdac7c"
+		},
+		{
+			"ImportPath": "github.com/mitchellh/mapstructure",
+			"Rev": "06020f85339e21b2478f756a78e295255ffa4d6a"
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
@@ -518,6 +531,10 @@
 			"ImportPath": "google.golang.org/grpc/transport",
 			"Comment": "v1.2.0-331-gde2209a",
 			"Rev": "de2209a968d48e8970546c8a710189f7461370f7"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
 		}
 	]
 }

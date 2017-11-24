@@ -10,6 +10,7 @@ RUN go get firebase.google.com/go
 RUN go get github.com/aws/aws-sdk-go/...
 RUN go get github.com/jinzhu/gorm
 RUN go get github.com/go-sql-driver/mysql
+RUN go get github.com/kylelemons/go-gypsy/yaml
 WORKDIR /go/src/github.com/tgsd96/cerviBack
 RUN go install .
 ENTRYPOINT /go/bin/cerviBack

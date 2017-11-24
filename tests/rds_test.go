@@ -8,34 +8,34 @@ import (
 )
 
 func TestDbConnection(t *testing.T) {
-	_, err := app.ConnectToRDS()
+	_, err := app.ConnectToRDS("mysql", "localhost:3306", "root", "", "cerback")
 	if err != nil {
 		t.Errorf("Test failed, error: %s", err.Error())
 	}
 }
 
-// func TestTableCreate(t *testing.T) {
-// 	db, err := app.ConnectToRDS()
-// 	if err != nil {
-// 		t.Errorf("Unable to connect, error: %s", err.Error())
-// 	}
-// 	err = app.CreateTable(db, models.ImageStatus{})
-// 	if err != nil {
-// 		t.Errorf("Error creating table, error : %s", err.Error())
-// 	}
-// }
+func TestTableCreate(t *testing.T) {
+	db, err := app.ConnectToRDS("mysql", "localhost:3306", "root", "", "cerback")
+	if err != nil {
+		t.Errorf("Unable to connect, error: %s", err.Error())
+	}
+	err = app.CreateTable(db, models.ImageStatus{})
+	if err != nil {
+		t.Errorf("Error creating table, error : %s", err.Error())
+	}
+}
 func TestTableEntry(t *testing.T) {
-	db, err := app.ConnectToRDS()
+	db, err := app.ConnectToRDS("mysql", "localhost:3306", "root", "", "cerback")
 	if err != nil {
 		t.Errorf("Test failed, error: %s", err.Error())
 	}
 	image := models.ImageStatus{
-		ImageKey: "testingkey1.png",
+		ImageKey: "checkStatus.png",
 		UserID:   "testinguserid2",
 		Status:   "INQUEUE",
-		Type1:    99.1,
-		Type2:    0.1,
-		Type3:    0.8,
+		Type1:    0.11,
+		Type2:    0.21,
+		Type3:    0.22,
 	}
 	err = app.AddImageToTable(db, &image)
 	if err != nil {
